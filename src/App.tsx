@@ -16,7 +16,8 @@ import {
   BarChart3,
   QrCode,
   Printer,
-  Download
+  Download,
+  CheckCircle2
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -96,6 +97,33 @@ const RA_MONTHLY = [
   { m: 'Dic', tickets: 666, value: 10000, events: 10, avg: 1000 }
 ];
 
+const CONCIERTOS_MONTHLY = [
+  { m: 'Ene', barra: 1622, alquiler: 1200, profit: -176, events: 3 },
+  { m: 'Feb', barra: 5148, alquiler: 3110, profit: 1316, events: 8 },
+  { m: 'Mar', barra: 5903, alquiler: 3040, profit: 1771, events: 8 },
+  { m: 'Abr', barra: 8667, alquiler: 3720, profit: 3502, events: 10 },
+  { m: 'May', barra: 6803, alquiler: 3200, profit: 2392, events: 9 },
+  { m: 'Jun', barra: 6012, alquiler: 3600, profit: 1564, events: 9 },
+  { m: 'Jul', barra: 1062, alquiler: 200, profit: 360, events: 1 },
+  { m: 'Sep', barra: 2631, alquiler: 1000, profit: 1036, events: 3 },
+  { m: 'Oct', barra: 4923, alquiler: 2926, profit: 1575, events: 8 },
+  { m: 'Nov', barra: 11335, alquiler: 4100, profit: 3593, events: 14 },
+  { m: 'Dic', barra: 7179, alquiler: 2500, profit: 2599, events: 8 }
+];
+
+const TOP_CONCIERTOS = [
+  { n: "Paco Pecado", d: "27 Mar", profit: 1028, barra: 1272, alquiler: 980 },
+  { n: "Black Devil", d: "01 Nov", profit: 1005, barra: 2020, alquiler: 0 },
+  { n: "Los Toros", d: "26 Abr", profit: 896, barra: 1562, alquiler: 400 },
+  { n: "Demo: Ezezez", d: "24 Abr", profit: 804, barra: 1447, alquiler: 400 },
+  { n: "Hostia Pedagogica", d: "24 Oct", profit: 757, barra: 1309, alquiler: 400 },
+  { n: "Saturna", d: "27 Dic", profit: 712, barra: 1581, alquiler: 200 },
+  { n: "Los Toros", d: "19 Dic", profit: 700, barra: 1317, alquiler: 400 },
+  { n: "La Pestilencia", d: "09 Abr", profit: 700, barra: 1237, alquiler: 400 },
+  { n: "Cari Cari", d: "20 Nov", profit: 646, barra: 1419, alquiler: 200 },
+  { n: "Delta", d: "07 Feb", profit: 639, barra: 1173, alquiler: 400 }
+];
+
 const TOP_RA_EVENTS = [
   { n: "LAUT CAP D'ANY w/ Pépe", t: 215, v: 5570, full: true },
   { n: "LAUT Off Week: Nous'klaer", t: 195, v: 5220, full: true },
@@ -123,29 +151,94 @@ const WORST_RA_EVENTS = [
 ];
 
 const CRITICAL_NIGHTS = [
-  { n: "Baang: Dadame + Marc Gimeno", d: "04 Jul", total: 660, ra: 10, door: 150, bar: 500, profit: -940 },
-  { n: "Kinetic (All Night Long)", d: "13 Sep", total: 683, ra: 33, door: 150, bar: 500, profit: -917 },
-  { n: "BUIT: Dafoe + Formica + Josépha", d: "01 Ago", total: 700, ra: 50, door: 150, bar: 500, profit: -900 },
-  { n: "Davy + Kinetic", d: "03 Oct", total: 705, ra: 55, door: 150, bar: 500, profit: -895 },
-  { n: "Luishock + Spacer [En Órbita II Aniv.]", d: "14 Nov", total: 716, ra: 66, door: 150, bar: 500, profit: -884 },
-  { n: "Facundo + Martí Cros", d: "01 Nov", total: 716, ra: 66, door: 150, bar: 500, profit: -884 },
-  { n: "Lucient + zizi k", d: "27 Sep", total: 716, ra: 66, door: 150, bar: 500, profit: -884 },
-  { n: "Lucient + Lux Lisbon", d: "28 Mar", total: 710, ra: 60, door: 150, bar: 500, profit: -890 },
-  { n: "Hiru: Luce Clandestina + Nico", d: "06 Sep", total: 727, ra: 77, door: 150, bar: 500, profit: -873 },
-  { n: "Lucient + Souto", d: "25 Abr", total: 720, ra: 70, door: 150, bar: 500, profit: -880 }
+  { n: "Club Aura #2: Lena Willikens, Melina Serser", d: "23 Nov", total: 4420.95, ra: 2400, door: 227.77, bar: 1793.18, profit: -1985.03 },
+  { n: "Off Week: Ombra x Legwork", d: "12 Jun", total: 2080.45, ra: 0, door: 500, bar: 1580.45, profit: -519.76 },
+  { n: "La Mercè Electro Battle", d: "23 Sep", total: 1802.73, ra: 0, door: 0, bar: 1802.73, profit: -433.44 },
+  { n: "Baang: Dadame + Marc Gimeno", d: "04 Jul", total: 2550.00, ra: 10, door: 1254.55, bar: 1285.45, profit: -21.66 },
+  { n: "Club Aura #1: Marco Shuttle, Røpe...", d: "18 May", total: 4761.73, ra: 2189, door: 370.91, bar: 2201.82, profit: -15.42 },
+  { n: "Luishock + Spacer", d: "14 Nov", total: 2320.09, ra: 66, door: 1370.91, bar: 883.18, profit: 71.24 },
+  { n: "Tatie Dee + Pau Roca", d: "21 Nov", total: 2410.37, ra: 418, door: 685.55, bar: 1306.82, profit: 87.80 },
+  { n: "Lucient + Lux Lisbon", d: "28 Mar", total: 2587.75, ra: 60, door: 1156.36, bar: 1371.39, profit: 200.30 },
+  { n: "Facundo + Martí Cros", d: "01 Nov", total: 2536.91, ra: 66, door: 1230, bar: 1240.91, profit: 219.52 },
+  { n: "Tom Morgan + Dafoe", d: "07 Feb", total: 2625.00, ra: 80, door: 1200, bar: 1345, profit: 238.86 }
 ];
 
+const COMPARATIVE_DATA = [
+  { concept: 'INGRESOS NETOS', v24: 578207, v25: 572068, var: -6139, varPct: -1.1, bold: true },
+  { concept: '— Taquilla', v24: 179398, v25: 179254, var: -144, varPct: -0.1 },
+  { concept: '— Barra', v24: 321044, v25: 311653, var: -9391, varPct: -2.9, icon: '🔴' },
+  { concept: '— Ventas Web (anticipadas)', v24: 44404, v25: 51697, var: 7293, varPct: 16.4, icon: '✅' },
+  { concept: '— Prestaciones de Servicios', v24: 33360, v25: 29465, var: -3895, varPct: -11.7, icon: '🔴' },
+  { concept: 'APROVISIONAMIENTOS', v24: -339673, v25: -306113, var: 33560, varPct: -9.9, bold: true, icon: '✅' },
+  { concept: '— Compras Bar', v24: -68324, v25: -61984, var: 6340, varPct: -9.3, icon: '✅' },
+  { concept: '— Booking DJs', v24: -87096, v25: -85679, var: 1417, varPct: -1.6 },
+  { concept: '— Técnicos y Producción', v24: -60608, v25: -51503, var: 9105, varPct: -15.0, icon: '✅' },
+  { concept: '— Comunicación y Marketing', v24: -21903, v25: -11180, var: 10723, varPct: -49.0, icon: '⚠️' },
+  { concept: '— Otros Serv. Profesionales', v24: -87393, v25: -75247, var: 12146, varPct: -13.9, icon: '✅' },
+  { concept: '— Asesoría Contable/Lab.', v24: -5788, v25: -10866, var: -5078, varPct: 87.7, icon: '🔴' },
+  { concept: 'MARGEN BRUTO', v24: 238534, v25: 265955, var: 27421, varPct: 11.5, bold: true, icon: '✅' },
+  { concept: 'Margen bruto (%)', v24: 41.3, v25: 46.5, var: 0, varPct: 5.2, italic: true, isPct: true },
+  { concept: 'GASTOS DE PERSONAL', v24: -106012, v25: -121461, var: -15449, varPct: 14.6, bold: true, icon: '🔴' },
+  { concept: '— Sueldos y Salarios', v24: -80365, v25: -89892, var: -9527, varPct: 11.9, icon: '🔴' },
+  { concept: '— Seguridad Social', v24: -25648, v25: -28369, var: -2721, varPct: 10.6 },
+  { concept: '— SS Bonificación', v24: 0, v25: -3200, var: -3200, varPct: 0, icon: '🔴' },
+  { concept: 'OTROS GASTOS EXPLOTACIÓN', v24: -90665, v25: -116449, var: -25784, varPct: 28.4, bold: true, icon: '🔴' },
+  { concept: '— Alquiler', v24: -21053, v25: -21087, var: -34, varPct: 0.2, icon: '✅' },
+  { concept: '— Reparaciones', v24: -7151, v25: -14731, var: -7580, varPct: 106, icon: '🚨' },
+  { concept: '— Suministros', v24: -44647, v25: -56433, var: -11786, varPct: 26.4, icon: '🔴' },
+  { concept: '— Servicios Bancarios', v24: -8322, v25: -10181, var: -1859, varPct: 22.3 },
+  { concept: '— Dietas y Hoteles', v24: -6809, v25: -6870, var: -61, varPct: 0.9, icon: '✅' },
+  { concept: '— Gastos de Oficina', v24: -2399, v25: -4327, var: -1928, varPct: 80.4, icon: '🔴' },
+  { concept: 'AMORTIZACIÓN', v24: -21807, v25: -21734, var: 73, varPct: -0.3, bold: true, icon: '✅' },
+  { concept: 'OTROS INGRESOS EXPLOT.', v24: 2310, v25: 10982, var: 8672, varPct: 275, bold: true, icon: '⚠️' },
+  { concept: '— Subvenciones', v24: 0, v25: 9382, var: 9382, varPct: 0, icon: 'extraordinario' },
+  { concept: '— Arrendamientos', v24: 2310, v25: 1600, var: -710, varPct: -30.7 },
+  { concept: 'EBIT', v24: 22367, v25: 20656, var: -1711, varPct: -7.6, bold: true, icon: '🔴' },
+  { concept: 'Margen EBIT (%)', v24: 3.9, v25: 3.6, var: 0, varPct: -0.3, italic: true, isPct: true },
+  { concept: 'Resultado antes impuestos', v24: 22367, v25: 20669, var: -1698, varPct: -7.6 },
+  { concept: 'Impuesto sobre beneficios', v24: -5162, v25: -4534, var: 628, varPct: -12.2 },
+  { concept: 'RESULTADO NETO', v24: 17205, v25: 16135, var: -1070, varPct: -6.2, bold: true, icon: '🔴' },
+  { concept: 'Margen neto (%)', v24: 2.97, v25: 2.82, var: 0, varPct: -0.15, italic: true, isPct: true },
+];
+
+const PROJECTION_2026_DATA = [
+  { concept: 'INGRESOS NETOS', v25: 572068, v26: 605000, var: 5.8, bold: true },
+  { concept: 'APROVISIONAMIENTOS', v25: -306113, v26: -327000, var: 6.8, bold: true },
+  { concept: 'MARGEN BRUTO', v25: 265955, v26: 278000, var: 4.5, bold: true },
+  { concept: 'Margen bruto (%)', v25: 46.5, v26: 46.0, var: -0.5, isPct: true, italic: true },
+  { concept: 'GASTOS DE PERSONAL', v25: -121461, v26: -130600, var: 7.5, bold: true, icon: '🔴' },
+  { concept: '— ratio Personal/Ingresos', v25: 21.2, v26: 21.6, var: 0.4, isPct: true, italic: true },
+  { concept: 'OTROS GASTOS EXPLOT.', v25: -116449, v26: -108700, var: -6.6, bold: true, icon: '✅' },
+  { concept: 'AMORTIZACIÓN', v25: -21734, v26: -21700, var: 0, bold: true },
+  { concept: 'OTROS INGRESOS EXPLOT.', v25: 10982, v26: 13000, var: 18, bold: true, icon: '✅' },
+  { concept: 'EBIT', v25: 20656, v26: 30000, var: 45.3, bold: true, icon: '✅' },
+  { concept: 'Margen EBIT (%)', v25: 3.6, v26: 5.0, var: 1.4, isPct: true, italic: true },
+  { concept: 'Impuesto estimado (~22%)', v25: -4534, v26: -6600, var: 0 },
+  { concept: 'RESULTADO NETO', v25: 16135, v26: 23400, var: 45.1, bold: true, icon: '✅' },
+  { concept: 'Margen neto (%)', v25: 2.82, v26: 3.9, var: 1.1, isPct: true, italic: true },
+];
+
+const PROJECTION_ADJUSTMENTS = [
+  { factor: '+5% sueldos y SS', effect: '-5.913€', positive: false },
+  { factor: '+2% Booking DJs', effect: '-1.714€', positive: false },
+  { factor: '+2% Técnicos', effect: '-1.030€', positive: false },
+  { factor: '+5% Marketing', effect: '-559€', positive: false },
+  { factor: 'Eliminación bonificación SS', effect: '-3.200€', positive: false },
+  { factor: 'Total degradación vs base', effect: '-12.416€', bold: true, positive: false },
+];
+
+
 const TOP_NIGHTS = [
-  { n: "LAUT Off Week: Nous'klaer", d: "14 Jun", total: 12470, ra: 5220, door: 1850, bar: 5400 },
-  { n: "Selectors: Ben Sims", d: "29 Mar", total: 9990, ra: 3740, door: 1450, bar: 4800 },
-  { n: "LAUT CAP D'ANY w/ Pépe", d: "31 Dic", total: 8585, ra: 5600, door: 221, bar: 2764 },
-  { n: "Selectors: Truncate", d: "26 Sep", total: 8325, ra: 1275, door: 2850, bar: 4200 },
-  { n: "Club Aura: Marco Shuttle", d: "17 May", total: 8789, ra: 2189, door: 2250, bar: 4350 },
-  { n: "Reggy Van Oers B2B Aleja", d: "06 Dic", total: 5525, ra: 660, door: 2255, bar: 2610 },
-  { n: "Mario F + Røpe", d: "05 Dic", total: 5389, ra: 605, door: 2095, bar: 2689 },
-  { n: "Selene Series: Pianeti", d: "20 Dic", total: 5340, ra: 660, door: 1729, bar: 2951 },
-  { n: "Hervé + Momasé", d: "13 Dic", total: 5332, ra: 517, door: 2249, bar: 2566 },
-  { n: "Jhort + murianoise", d: "12 Dic", total: 5045, ra: 473, door: 2479, bar: 2093 }
+  { n: "Off Week: Nous'klaer Audio", d: "14 Jun", total: 11264, ra: 5220, door: 998, bar: 5045 },
+  { n: "LAUT CAP D'ANY w/ Pépe", d: "31 Dic", total: 8584, ra: 5600, door: 220, bar: 2764 },
+  { n: "Amberdelic: Sybil + Iro Aka", d: "23 May", total: 6606, ra: 2330, door: 1941, bar: 2335 },
+  { n: "Acidnena + Bat + Verushka", d: "09 May", total: 6483, ra: 480, door: 2369, bar: 3634 },
+  { n: "Angel Molina B2B Psyk", d: "15 Nov", total: 6160, ra: 935, door: 1821, bar: 3404 },
+  { n: "Selectors: Truncate", d: "26 Sep", total: 6137, ra: 1275, door: 1937, bar: 2925 },
+  { n: "ExtraMostra: Muted, Josh Hoppen...", d: "15 Feb", total: 6124, ra: 600, door: 2348, bar: 3176 },
+  { n: "Selene Series: Shoal, DOC...", d: "08 Feb", total: 6037, ra: 600, door: 2141, bar: 3296 },
+  { n: "Aaron J + ABSIS", d: "31 May", total: 5910, ra: 1200, door: 1072, bar: 3638 },
+  { n: "Jhort + servei", d: "29 Ago", total: 5850, ra: 580, door: 2001, bar: 3269 }
 ];
 
 // --- COMPONENTS ---
@@ -256,7 +349,7 @@ const BarRow = ({ label, value, max, color, dim }: BarRowProps) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'financiero' | 'eventos' | 'ra' | 'top_noches' | 'noches_criticas' | 'resumen' | 'comparativa'>('financiero');
+  const [activeTab, setActiveTab] = useState<'financiero' | 'eventos' | 'ra' | 'conciertos' | 'resumen' | 'proyeccion_2026'>('financiero');
   const maxRATickets = Math.max(...RA_MONTHLY.map(d => d.tickets));
 
   return (
@@ -275,7 +368,7 @@ export default function App() {
 
       {/* Tabs */}
       <div className="bg-white border-b border-black/5 px-6 md:px-12 sticky top-16 z-[99] flex gap-0 overflow-x-auto no-scrollbar print:hidden">
-        {(['financiero', 'eventos', 'ra', 'top_noches', 'noches_criticas', 'comparativa', 'resumen'] as const).map((tab) => (
+        {(['financiero', 'eventos', 'ra', 'conciertos', 'resumen', 'proyeccion_2026'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -286,7 +379,7 @@ export default function App() {
                 : "text-[#6e6e73] border-transparent hover:text-[#1d1d1f]"
             )}
           >
-            {tab === 'noches_criticas' ? 'Noches Críticas' : tab === 'ra' ? 'RA' : tab === 'top_noches' ? 'Top Noches' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === 'ra' ? 'RA' : tab === 'proyeccion_2026' ? 'Proyección 2026' : tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
       </div>
@@ -391,7 +484,7 @@ export default function App() {
                 </div>
               </Card>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-white p-6 rounded-[18px] border border-black/5 shadow-sm">
                   <div className="text-[#0071e3] mb-3 flex justify-between items-start">
                     <Users size={24} />
@@ -416,87 +509,149 @@ export default function App() {
                   <div className="text-2xl font-bold mb-1">11,5%</div>
                   <div className="text-[0.75rem] font-medium text-[#6e6e73] uppercase tracking-wider">Ratio de Lleno</div>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'top_noches' && (
-            <div className="flex flex-col gap-5 animate-in fade-in duration-500">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <HeroCard 
-                  icon={Flame} 
-                  label="Mejor Noche (Off Week)" 
-                  value="12.470 €" 
-                  subLabel="14 Junio 2025" 
-                  tag="Récord histórico"
-                  variant="green"
-                />
-                <HeroCard 
-                  icon={DollarSign} 
-                  label="Avg Top 10" 
-                  value="8.479 €" 
-                  subLabel="Media de las 10 mejores" 
-                  tag="Alta rentabilidad"
-                  variant="blue"
-                />
-                <HeroCard 
-                  icon={Users} 
-                  label="Asistencia Top" 
-                  value="220" 
-                  subLabel="Pico de entradas RA" 
-                  tag="Ben Sims"
-                />
-                <HeroCard 
-                  icon={TrendingUp} 
-                  label="Ratio Barra/RA" 
-                  value="3.1x" 
-                  subLabel="Consumo vs Entrada" 
-                  tag="Optimizado"
-                />
-              </div>
-
-              <Card className="overflow-hidden">
-                <div className="px-[26px] py-4 border-b border-black/5 flex justify-between items-baseline">
-                  <div className="text-[0.88rem] font-semibold tracking-[-0.01em]">Ranking: Las 10 Mejores Noches (RA + Puerta + Barra)</div>
-                  <div className="text-[0.88rem] font-semibold tracking-[-0.02em] text-[#34c759]">Estimación 2025</div>
+                <div className="bg-white p-6 rounded-[18px] border border-black/5 shadow-sm">
+                  <div className="text-[#0071e3] mb-3 flex justify-between items-start">
+                    <TrendingUp size={24} />
+                    <span className="text-[0.65rem] font-bold bg-[#e8f1fb] text-[#0071e3] px-2.5 py-1 rounded-full">MEJOR NOCHE</span>
+                  </div>
+                  <div className="text-2xl font-bold mb-1">11.264 €</div>
+                  <div className="text-[0.75rem] font-medium text-[#6e6e73] uppercase tracking-wider">Récord de Facturación</div>
                 </div>
-                <div className="overflow-x-auto no-scrollbar">
-                  <div className="min-w-[700px]">
-                    <div className="grid grid-cols-[40px_1fr_80px_100px_100px_100px_100px] gap-3 px-[26px] py-2.5 text-[0.65rem] font-medium text-[#aeaeb2] uppercase tracking-[0.04em] border-b border-black/5">
-                      <div className="text-center">#</div><div>Evento</div><div className="text-right">Fecha</div><div className="text-right">RA</div><div className="text-right">Puerta</div><div className="text-right">Barra</div><div className="text-right font-bold text-[#1d1d1f]">Total</div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <Card className="lg:col-span-2 overflow-hidden">
+                  <div className="px-[26px] py-4 border-b border-black/5 flex justify-between items-baseline bg-[#f9f9fb]">
+                    <div className="text-[0.88rem] font-bold tracking-[-0.01em]">Top 10 Noches (Rendimiento Total)</div>
+                    <div className="text-[0.75rem] text-[#6e6e73] font-medium">RA + Puerta + Barra</div>
+                  </div>
+                  <div className="flex flex-col">
+                    {TOP_NIGHTS.map((n, i) => (
+                      <div key={i} className="px-[26px] py-3.5 border-b border-black/5 last:border-none hover:bg-[#f0faf3] transition-colors flex justify-between items-center group">
+                        <div className="flex items-center gap-4 overflow-hidden">
+                          <span className="text-[0.75rem] font-bold text-[#aeaeb2] w-5 text-center group-hover:text-[#34c759] transition-colors">{i + 1}</span>
+                          <div className="flex flex-col overflow-hidden">
+                            <span className="text-[0.88rem] font-bold text-[#1d1d1f] truncate">{n.n}</span>
+                            <span className="text-[0.7rem] text-[#6e6e73] font-medium">{n.d}</span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-[0.95rem] font-bold text-[#34c759] whitespace-nowrap">
+                            {n.total.toLocaleString('es-ES')} €
+                          </div>
+                          <div className="text-[0.65rem] text-[#aeaeb2] font-bold uppercase tracking-wider">Total Est.</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+
+                <div className="flex flex-col gap-5">
+                  <Card className="p-6 bg-[#1d1d1f] text-white">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-white/10 rounded-xl text-white">
+                        <Info size={20} />
+                      </div>
+                      <h4 className="font-bold text-[0.9rem]">Análisis de Top Noches</h4>
+                    </div>
+                    <p className="text-[0.82rem] text-white/70 leading-relaxed mb-4">
+                      Las 10 mejores noches generan una facturación media de <span className="text-white font-bold">8.479 €</span>. 
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-[0.75rem] text-white/50">Ratio Barra/RA</span>
+                        <span className="text-[0.85rem] font-bold text-[#34c759]">3.1x</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-[0.75rem] text-white/50">Avg Gasto/Pax</span>
+                        <span className="text-[0.85rem] font-bold text-[#34c759]">38,50 €</span>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-6 bg-[#f5f5f7] border border-black/5">
+                    <h4 className="font-bold text-[0.85rem] mb-3 uppercase tracking-wider text-[#6e6e73]">Estrategia 2026</h4>
+                    <p className="text-[0.8rem] text-[#1d1d1f] leading-relaxed">
+                      El éxito de las Top Noches se basa en el equilibrio entre nombres internacionales y promotores locales con comunidad fiel. Se recomienda potenciar el ticket medio en estas fechas mediante preventa dinámica.
+                    </p>
+                  </Card>
+                </div>
+              </div>
+
+              <div className="mt-8 border-t border-black/5 pt-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-[#ff3b30]/10 rounded-xl text-[#ff3b30]">
+                    <AlertTriangle size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold tracking-tight text-[#1d1d1f]">Noches Críticas (Bajo Rendimiento)</h3>
+                    <p className="text-[0.85rem] text-[#6e6e73]">Eventos con margen ajustado o pérdidas netas</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                  <Card className="lg:col-span-2 overflow-hidden">
+                    <div className="px-[26px] py-4 border-b border-black/5 flex justify-between items-baseline bg-[#fff2f1]">
+                      <div className="text-[0.88rem] font-bold tracking-[-0.01em]">Peores 10 Noches del Año</div>
+                      <div className="text-[0.75rem] text-[#ff3b30] font-bold uppercase tracking-wider">Requieren Revisión</div>
                     </div>
                     <div className="flex flex-col">
-                      {TOP_NIGHTS.map((n, i) => (
-                        <div key={i} className="grid grid-cols-[40px_1fr_80px_100px_100px_100px_100px] gap-3 items-center px-[26px] py-3 border-b border-black/5 last:border-none hover:bg-[#f0faf3] transition-colors">
-                          <div className="text-[0.78rem] font-bold text-[#aeaeb2] text-center">{i + 1}</div>
-                          <div className="text-[0.85rem] font-bold text-[#1d1d1f] truncate">{n.n}</div>
-                          <div className="text-[0.78rem] text-[#6e6e73] text-right">{n.d}</div>
-                          <div className="text-[0.8rem] text-[#6e6e73] text-right">{n.ra.toLocaleString('es-ES')} €</div>
-                          <div className="text-[0.8rem] text-[#6e6e73] text-right">{n.door.toLocaleString('es-ES')} €</div>
-                          <div className="text-[0.8rem] text-[#6e6e73] text-right">{n.bar.toLocaleString('es-ES')} €</div>
-                          <div className="text-[0.88rem] font-bold text-right text-[#34c759]">{n.total.toLocaleString('es-ES')} €</div>
+                      {CRITICAL_NIGHTS.map((n, i) => (
+                        <div key={i} className="px-[26px] py-3.5 border-b border-black/5 last:border-none hover:bg-[#fff2f1] transition-colors flex justify-between items-center group">
+                          <div className="flex items-center gap-4 overflow-hidden">
+                            <span className="text-[0.75rem] font-bold text-[#aeaeb2] w-5 text-center group-hover:text-[#ff3b30] transition-colors">{i + 1}</span>
+                            <div className="flex flex-col overflow-hidden">
+                              <span className="text-[0.88rem] font-bold text-[#1d1d1f] truncate">{n.n}</span>
+                              <span className="text-[0.7rem] text-[#6e6e73] font-medium">{n.d}</span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className={cn("text-[0.95rem] font-bold whitespace-nowrap", n.profit < 0 ? "text-[#ff3b30]" : "text-[#ff9500]")}>
+                              {n.profit.toLocaleString('es-ES')} €
+                            </div>
+                            <div className="text-[0.65rem] text-[#aeaeb2] font-bold uppercase tracking-wider">Beneficio Neto</div>
+                          </div>
                         </div>
                       ))}
                     </div>
-                  </div>
-                </div>
-              </Card>
+                  </Card>
 
-              <Card className="p-6 bg-[#e8f1fb] border-[#0071e3]/10">
-                <div className="flex gap-4">
-                  <div className="p-3 bg-white rounded-2xl text-[#0071e3] shadow-sm">
-                    <Info size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-[#0071e3] mb-1">Nota sobre los datos</h4>
-                    <p className="text-[0.85rem] text-[#1d1d1f] leading-relaxed">
-                      Los ingresos de **Puerta** y **Barra** han sido ajustados para reflejar la facturación real de cada evento. Esta tabla muestra el impacto directo de las noches con mayor afluencia, permitiendo identificar qué promotores y artistas generan el mayor consumo por asistente.
-                    </p>
+                  <div className="flex flex-col gap-5">
+                    <Card className="p-6 bg-[#ff3b30] text-white">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-white/10 rounded-xl text-white">
+                          <TrendingDown size={20} />
+                        </div>
+                        <h4 className="font-bold text-[0.9rem]">Alerta de Rentabilidad</h4>
+                      </div>
+                      <p className="text-[0.82rem] text-white/80 leading-relaxed mb-4">
+                        Estas 10 noches representan una facturación media de <span className="text-white font-bold">2.810 €</span>. En 5 de estas fechas se produjeron pérdidas netas.
+                      </p>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center py-2 border-b border-white/10">
+                          <span className="text-[0.75rem] text-white/60">Peor Noche</span>
+                          <span className="text-[0.85rem] font-bold text-white">−1.985 €</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-white/10">
+                          <span className="text-[0.75rem] text-white/60">Pérdida Media</span>
+                          <span className="text-[0.85rem] font-bold text-white">−216 €</span>
+                        </div>
+                      </div>
+                    </Card>
+
+                    <Card className="p-6 bg-[#f5f5f7] border border-black/5">
+                      <h4 className="font-bold text-[0.85rem] mb-3 uppercase tracking-wider text-[#6e6e73]">Acción Recomendada</h4>
+                      <p className="text-[0.8rem] text-[#1d1d1f] leading-relaxed">
+                        Revisar la estructura de costes fijos y los fees de artistas en fechas de baja demanda estacional. Se sugiere establecer un umbral de preventa mínimo 48h antes para decidir la viabilidad de la apertura.
+                      </p>
+                    </Card>
                   </div>
                 </div>
-              </Card>
+              </div>
             </div>
           )}
+
+
           {activeTab === 'ra' && (
             <div className="flex flex-col gap-5 animate-in fade-in duration-500">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -616,292 +771,389 @@ export default function App() {
             </div>
           )}
 
-          {activeTab === 'noches_criticas' && (
+          {activeTab === 'conciertos' && (
             <div className="flex flex-col gap-5 animate-in fade-in duration-500">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <HeroCard 
-                  icon={TrendingDown} 
-                  label="Peor Noche" 
-                  value="610 €" 
-                  subLabel="Baang: Dadame" 
-                  tag="Mínimo histórico"
-                  variant="red"
-                />
-                <HeroCard 
-                  icon={AlertTriangle} 
-                  label="Pérdida estimada" 
-                  value="−533 €" 
-                  subLabel="Avg por show fallido" 
-                  tag="Crítico"
-                  variant="red"
-                />
-                <HeroCard 
                   icon={Users} 
-                  label="Avg ingresos críticos" 
-                  value="1.066 €" 
-                  subLabel="Media de las 10 peores" 
-                  tag="Bajo rendimiento"
+                  label="Conciertos Realizados" 
+                  value="81" 
+                  subLabel="Total año 2025" 
+                  tag="Agenda cultural"
+                  variant="blue"
                 />
                 <HeroCard 
                   icon={DollarSign} 
-                  label="Facturación total peores" 
-                  value="10.663 €" 
-                  subLabel="Suma de las 10 peores" 
-                  tag="Margen negativo"
+                  label="Ingresos Barra" 
+                  value="61.284 €" 
+                  subLabel="Consumo en conciertos" 
+                  tag="756 € avg / show"
+                  variant="green"
+                />
+                <HeroCard 
+                  icon={Home} 
+                  label="Ingresos Alquiler" 
+                  value="28.596 €" 
+                  subLabel="Fees de sala" 
+                  tag="353 € avg / show"
+                  variant="green"
+                />
+                <HeroCard 
+                  icon={TrendingUp} 
+                  label="Beneficio Neto" 
+                  value="19.533 €" 
+                  subLabel="Resultado conciertos" 
+                  tag="241 € avg / show"
+                  variant="blue"
                 />
               </div>
 
-              <Card className="overflow-hidden">
-                <div className="px-[26px] py-4 border-b border-black/5 flex justify-between items-baseline">
-                  <div className="text-[0.88rem] font-semibold tracking-[-0.01em]">Ranking: Las 10 Noches Críticas (RA + Puerta + Barra)</div>
-                  <div className="text-[0.88rem] font-semibold tracking-[-0.02em] text-[#ff3b30]">Requieren revisión urgente</div>
-                </div>
-                <div className="overflow-x-auto no-scrollbar">
-                  <div className="min-w-[700px]">
-                    <div className="grid grid-cols-[40px_1fr_80px_90px_90px_90px_90px_90px] gap-3 px-[26px] py-2.5 text-[0.65rem] font-medium text-[#aeaeb2] uppercase tracking-[0.04em] border-b border-black/5">
-                      <div className="text-center">#</div><div>Evento</div><div className="text-right">Fecha</div><div className="text-right">Anticipada</div><div className="text-right">Puerta</div><div className="text-right">Barra</div><div className="text-right">Ingreso</div><div className="text-right font-bold text-[#1d1d1f]">Beneficio</div>
-                    </div>
-                    <div className="flex flex-col">
-                      {CRITICAL_NIGHTS.map((n, i) => (
-                        <div key={i} className="grid grid-cols-[40px_1fr_80px_90px_90px_90px_90px_90px] gap-3 items-center px-[26px] py-3 border-b border-black/5 last:border-none hover:bg-[#fff2f1] transition-colors">
-                          <div className="text-[0.78rem] font-bold text-[#aeaeb2] text-center">{i + 1}</div>
-                          <div className="text-[0.85rem] font-bold text-[#1d1d1f] truncate">{n.n}</div>
-                          <div className="text-[0.78rem] text-[#6e6e73] text-right">{n.d}</div>
-                          <div className="text-[0.8rem] text-[#6e6e73] text-right">{n.ra.toLocaleString('es-ES')} €</div>
-                          <div className="text-[0.8rem] text-[#6e6e73] text-right">{n.door.toLocaleString('es-ES')} €</div>
-                          <div className="text-[0.8rem] text-[#6e6e73] text-right">{n.bar.toLocaleString('es-ES')} €</div>
-                          <div className="text-[0.8rem] text-[#6e6e73] text-right">{n.total.toLocaleString('es-ES')} €</div>
-                          <div className="text-[0.88rem] font-bold text-right text-[#ff3b30]">{n.profit.toLocaleString('es-ES')} €</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6 bg-[#fff2f1] border-[#ff3b30]/10">
-                <div className="flex gap-4">
-                  <div className="p-3 bg-white rounded-2xl text-[#ff3b30] shadow-sm">
-                    <AlertTriangle size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-[#ff3b30] mb-1">Análisis de las "Noches Críticas"</h4>
-                    <p className="text-[0.85rem] text-[#1d1d1f] leading-relaxed">
-                      Estas 10 noches representan una facturación media de <span className="font-bold">1.066 €</span>. El coste operativo de la sala (personal, suministros, limpieza) supera con creces estos ingresos en la mayoría de los casos, generando una pérdida neta directa por apertura. Se recomienda evaluar la cancelación de fechas con preventa inferior a 10 tickets 48h antes del evento.
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          )}
-
-          {activeTab === 'comparativa' && (
-            <div className="flex flex-col gap-5 animate-in fade-in duration-500">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <Card className="p-8">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <TrendingUp className="text-[#34c759]" />
-                    Evolución Financiera (2022 vs 2025)
-                  </h3>
-                  <div className="space-y-6">
-                    {[
-                      { label: 'Ingresos Totales', v22: DATA_2022.ingresos, v25: DATA_2025.ingresos, unit: '€' },
-                      { label: 'EBITDA', v22: DATA_2022.ebitda, v25: DATA_2025.ebitda, unit: '€' },
-                      { label: 'Beneficio Neto', v22: DATA_2022.beneficio, v25: DATA_2025.beneficio, unit: '€' },
-                      { label: 'Margen (%)', v22: DATA_2022.margen, v25: DATA_2025.margen, unit: '%' },
-                    ].map((item, i) => {
-                      const delta = ((item.v25 - item.v22) / item.v22) * 100;
-                      return (
-                        <div key={i} className="group">
-                          <div className="flex justify-between items-end mb-2">
-                            <span className="text-[0.85rem] font-medium text-[#6e6e73]">{item.label}</span>
-                            <span className={cn("text-[0.75rem] font-bold px-2 py-0.5 rounded-full", delta > 0 ? "bg-[#f0faf3] text-[#34c759]" : "bg-[#fff2f1] text-[#ff3b30]")}>
-                              {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 items-center">
-                            <div className="space-y-1">
-                              <div className="text-[0.65rem] text-[#aeaeb2] uppercase font-bold">2022</div>
-                              <div className="text-lg font-bold">{item.v22.toLocaleString('es-ES')}{item.unit}</div>
+                <Card className="overflow-hidden">
+                  <div className="px-[26px] py-4 border-b border-black/5 flex justify-between items-baseline">
+                    <div className="text-[0.88rem] font-semibold tracking-[-0.01em]">Evolución Mensual Conciertos</div>
+                    <div className="text-[0.88rem] font-semibold tracking-[-0.02em] text-[#0071e3]">81 eventos</div>
+                  </div>
+                  <div className="overflow-x-auto no-scrollbar">
+                    <div className="min-w-[600px]">
+                      <div className="grid grid-cols-[48px_1fr_100px_100px_100px_80px] gap-3 px-[26px] py-2.5 text-[0.65rem] font-medium text-[#aeaeb2] uppercase tracking-[0.04em] border-b border-black/5">
+                        <div>Mes</div><div>Barra</div><div className="text-right">Alquiler</div><div className="text-right">Profit</div><div className="text-right">Avg Profit</div><div className="text-right">Shows</div>
+                      </div>
+                      <div className="flex flex-col">
+                        {CONCIERTOS_MONTHLY.map((d, i) => (
+                          <div key={i} className="grid grid-cols-[48px_1fr_100px_100px_100px_80px] gap-3 items-center px-[26px] py-2.5 border-b border-black/5 last:border-none hover:bg-[#f5f5f7] transition-colors">
+                            <div className="text-[0.85rem] font-bold text-[#1d1d1f]">{d.m}</div>
+                            <div className="h-1.5 bg-[#f5f5f7] rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-[#34c759] opacity-60 rounded-full transition-all duration-1000" 
+                                style={{ width: `${(d.barra / 12000) * 100}%` }}
+                              />
                             </div>
-                            <div className="space-y-1 text-right">
-                              <div className="text-[0.65rem] text-[#0071e3] uppercase font-bold">2025 (Est)</div>
-                              <div className="text-lg font-bold text-[#0071e3]">{item.v25.toLocaleString('es-ES')}{item.unit}</div>
+                            <div className="text-[0.8rem] font-medium text-right text-[#6e6e73]">{d.alquiler.toLocaleString('es-ES')} €</div>
+                            <div className={cn("text-[0.8rem] font-bold text-right", d.profit < 0 ? "text-[#ff3b30]" : "text-[#34c759]")}>
+                              {d.profit.toLocaleString('es-ES')} €
                             </div>
+                            <div className="text-[0.78rem] text-[#6e6e73] text-right">{(d.profit / d.events).toLocaleString('es-ES', { maximumFractionDigits: 0 })} €</div>
+                            <div className="text-[0.78rem] text-[#6e6e73] text-right">{d.events}</div>
                           </div>
-                          <div className="mt-2 h-1.5 bg-[#f5f5f7] rounded-full overflow-hidden flex">
-                            <div 
-                              className="h-full bg-[#aeaeb2] opacity-30" 
-                              style={{ width: `${(item.v22 / Math.max(item.v22, item.v25)) * 100}%` }} 
-                            />
-                            <div 
-                              className="h-full bg-[#0071e3] opacity-60" 
-                              style={{ width: `${(item.v25 / Math.max(item.v22, item.v25)) * 100}%` }} 
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </Card>
 
-                <Card className="p-8">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <Users className="text-[#0071e3]" />
-                    Métricas Operativas
-                  </h3>
-                  <div className="space-y-6">
-                    {[
-                      { label: 'Asistentes Totales', v22: DATA_2022.asistentes, v25: DATA_2025.asistentes, unit: '' },
-                      { label: 'Eventos Realizados', v22: DATA_2022.eventos, v25: DATA_2025.eventos, unit: '' },
-                      { label: 'Ocupación Media (%)', v22: DATA_2022.ocupacion, v25: DATA_2025.ocupacion, unit: '%' },
-                      { label: 'Ticket Medio', v22: DATA_2022.ticketMedio, v25: DATA_2025.ticketMedio, unit: '€' },
-                    ].map((item, i) => {
-                      const delta = ((item.v25 - item.v22) / item.v22) * 100;
-                      return (
-                        <div key={i} className="group">
-                          <div className="flex justify-between items-end mb-2">
-                            <span className="text-[0.85rem] font-medium text-[#6e6e73]">{item.label}</span>
-                            <span className={cn("text-[0.75rem] font-bold px-2 py-0.5 rounded-full", delta > 0 ? "bg-[#f0faf3] text-[#34c759]" : "bg-[#fff2f1] text-[#ff3b30]")}>
-                              {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
-                            </span>
+                <Card className="overflow-hidden">
+                  <div className="px-[26px] py-4 border-b border-black/5 flex justify-between items-baseline">
+                    <div className="text-[0.88rem] font-semibold tracking-[-0.01em]">Top 10 Conciertos por Beneficio</div>
+                    <div className="text-[0.88rem] font-semibold tracking-[-0.02em] text-[#34c759]">Rentabilidad Sala</div>
+                  </div>
+                  <div className="overflow-x-auto no-scrollbar">
+                    <div className="min-w-[500px]">
+                      <div className="grid grid-cols-[28px_1fr_80px_80px_80px] gap-3 px-[26px] py-2.5 text-[0.65rem] font-medium text-[#aeaeb2] uppercase tracking-[0.04em] border-b border-black/5">
+                        <div className="text-center">#</div><div>Artista</div><div className="text-right">Fecha</div><div className="text-right">Barra</div><div className="text-right">Beneficio</div>
+                      </div>
+                      <div className="flex flex-col">
+                        {TOP_CONCIERTOS.map((e, i) => (
+                          <div key={i} className="grid grid-cols-[28px_1fr_80px_80px_80px] gap-3 items-center px-[26px] py-2.5 border-b border-black/5 last:border-none hover:bg-[#f5f5f7] transition-colors">
+                            <div className="text-[0.78rem] font-bold text-[#aeaeb2] text-center">{i + 1}</div>
+                            <div className="text-[0.8rem] font-bold text-[#1d1d1f] truncate">{e.n}</div>
+                            <div className="text-[0.78rem] text-[#6e6e73] text-right">{e.d}</div>
+                            <div className="text-[0.8rem] font-medium text-right">{e.barra.toLocaleString('es-ES')} €</div>
+                            <div className="text-[0.85rem] font-bold text-right text-[#34c759]">{e.profit.toLocaleString('es-ES')} €</div>
                           </div>
-                          <div className="grid grid-cols-2 gap-4 items-center">
-                            <div className="space-y-1">
-                              <div className="text-[0.65rem] text-[#aeaeb2] uppercase font-bold">2022</div>
-                              <div className="text-lg font-bold">{item.v22.toLocaleString('es-ES')}{item.unit}</div>
-                            </div>
-                            <div className="space-y-1 text-right">
-                              <div className="text-[0.65rem] text-[#0071e3] uppercase font-bold">2025 (Est)</div>
-                              <div className="text-lg font-bold text-[#0071e3]">{item.v25.toLocaleString('es-ES')}{item.unit}</div>
-                            </div>
-                          </div>
-                          <div className="mt-2 h-1.5 bg-[#f5f5f7] rounded-full overflow-hidden flex">
-                            <div 
-                              className="h-full bg-[#aeaeb2] opacity-30" 
-                              style={{ width: `${(item.v22 / Math.max(item.v22, item.v25)) * 100}%` }} 
-                            />
-                            <div 
-                              className="h-full bg-[#0071e3] opacity-60" 
-                              style={{ width: `${(item.v25 / Math.max(item.v22, item.v25)) * 100}%` }} 
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </Card>
               </div>
 
-              <Card className="p-6 bg-white">
-                <div className="flex flex-col md:flex-row gap-8 items-center">
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold mb-2">Conclusión del Crecimiento</h4>
-                    <p className="text-[0.9rem] text-[#6e6e73] leading-relaxed">
-                      El salto de 2022 a 2025 muestra una **consolidación del modelo de negocio**. A pesar de una ligera bajada en el ticket medio (de 14,80€ a 12,48€), el aumento en el volumen de eventos (+44%) y la mejora en la ocupación (+13%) han disparado los ingresos totales en un **68%**. El EBITDA se sitúa en **42.390 €**, con un margen del **7,4%**, reflejando una estructura de costes más pesada pero estable.
-                    </p>
+              <Card>
+                <div className="grid grid-cols-1 md:grid-cols-3">
+                  <div className="p-5 md:p-6 border-r border-black/5 last:border-none">
+                    <span className="text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-[#0071e3] bg-[#e8f1fb] px-2.5 py-1 rounded-full mb-2.5 inline-block">CONC 01</span>
+                    <div className="text-[0.88rem] font-semibold tracking-[-0.01em] mb-1.5">Noviembre, récord de actividad</div>
+                    <p className="text-[0.76rem] text-[#6e6e73] leading-[1.65]">Con <strong>14 conciertos y 11.335 €</strong> de barra, noviembre fue el mes más rentable para la programación de directos, impulsado por una agenda densa y variada.</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
-                    <div className="bg-[#f0faf3] p-4 rounded-2xl border border-[#34c759]/10 text-center">
-                      <div className="text-[0.65rem] font-bold text-[#34c759] uppercase mb-1">Crecimiento Ingresos</div>
-                      <div className="text-2xl font-bold text-[#1d1d1f]">+68,4%</div>
-                    </div>
-                    <div className="bg-[#e8f1fb] p-4 rounded-2xl border border-[#0071e3]/10 text-center">
-                      <div className="text-[0.65rem] font-bold text-[#0071e3] uppercase mb-1">Crecimiento EBITDA</div>
-                      <div className="text-2xl font-bold text-[#1d1d1f]">+67,9%</div>
-                    </div>
+                  <div className="p-5 md:p-6 border-r border-black/5 last:border-none">
+                    <span className="text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-[#0071e3] bg-[#e8f1fb] px-2.5 py-1 rounded-full mb-2.5 inline-block">CONC 02</span>
+                    <div className="text-[0.88rem] font-semibold tracking-[-0.01em] mb-1.5">Paco Pecado, el más rentable</div>
+                    <p className="text-[0.76rem] text-[#6e6e73] leading-[1.65]">El concierto de Paco Pecado en marzo generó un beneficio neto de <strong>1.028 €</strong>, destacando por un alto alquiler y un consumo de barra muy eficiente.</p>
+                  </div>
+                  <div className="p-5 md:p-6 border-r border-black/5 last:border-none">
+                    <span className="text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-[#0071e3] bg-[#e8f1fb] px-2.5 py-1 rounded-full mb-2.5 inline-block">CONC 03</span>
+                    <div className="text-[0.88rem] font-semibold tracking-[-0.01em] mb-1.5">Estabilidad del Alquiler</div>
+                    <p className="text-[0.76rem] text-[#6e6e73] leading-[1.65]">El alquiler de sala aporta una base sólida de <strong>28.596 €</strong> anuales, garantizando la viabilidad de la programación incluso en noches de menor consumo.</p>
                   </div>
                 </div>
               </Card>
             </div>
           )}
 
+
+
+
           {activeTab === 'resumen' && (
-            <div className="flex flex-col gap-5 animate-in fade-in duration-500">
-              <Card className="p-8 md:p-10">
-                <div className="max-w-3xl mx-auto flex flex-col gap-10">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3 text-[#34c759]">
-                      <TrendingUp size={28} />
-                      <h2 className="text-2xl font-bold tracking-tight">1. Rentabilidad y Crecimiento 2025</h2>
-                    </div>
-                    <p className="text-lg text-[#1d1d1f] leading-relaxed">
-                      LAUT MUSIC ha consolidado su posición en 2025, alcanzando una facturación estimada de <span className="font-bold text-[#34c759]">{DATA_2025.ingresos.toLocaleString('es-ES')} €</span>, lo que representa un crecimiento del <span className="font-bold">68%</span> respecto a 2022.
-                    </p>
-                    <div className="bg-[#f0faf3] p-6 rounded-2xl border border-[#34c759]/10">
-                      <p className="text-[#34c759] font-medium mb-2 uppercase text-[0.7rem] tracking-wider">Eficiencia Operativa</p>
-                      <p className="text-[#1d1d1f] text-lg">A pesar del aumento de volumen, el margen EBITDA se mantiene sólido en el <span className="font-bold">{DATA_2025.margen.toString().replace('.', ',')}%</span>, demostrando que el crecimiento ha sido escalable y controlado.</p>
-                    </div>
+            <div className="flex flex-col gap-6 animate-in fade-in duration-700">
+              <Card className="p-0 overflow-hidden">
+                <div className="bg-[#1d1d1f] text-white p-8 md:p-10">
+                  <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">📊 ANÁLISIS COMPARATIVO 2024 vs 2025</h1>
+                  <p className="text-white/60 text-lg">LAUT MUSIC, S.L.U. · Informe de Desempeño y Salud Financiera</p>
+                </div>
+
+                <div className="p-6 md:p-10">
+                  <div className="overflow-x-auto no-scrollbar mb-12">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-black/10">
+                          <th className="py-4 px-4 text-[0.7rem] font-bold uppercase tracking-wider text-[#6e6e73]">Concepto</th>
+                          <th className="py-4 px-4 text-[0.7rem] font-bold uppercase tracking-wider text-[#6e6e73] text-right">2024</th>
+                          <th className="py-4 px-4 text-[0.7rem] font-bold uppercase tracking-wider text-[#6e6e73] text-right">2025</th>
+                          <th className="py-4 px-4 text-[0.7rem] font-bold uppercase tracking-wider text-[#6e6e73] text-right">Var. €</th>
+                          <th className="py-4 px-4 text-[0.7rem] font-bold uppercase tracking-wider text-[#6e6e73] text-right">Var. %</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {COMPARATIVE_DATA.map((row, i) => (
+                          <tr 
+                            key={i} 
+                            className={cn(
+                              "border-b border-black/5 hover:bg-[#f5f5f7] transition-colors",
+                              row.bold && "bg-[#f9f9fb] font-bold",
+                              row.italic && "italic text-[#6e6e73]"
+                            )}
+                          >
+                            <td className="py-3 px-4 text-[0.85rem] flex items-center gap-2">
+                              {row.concept}
+                              {row.icon && <span className="text-[0.9rem]">{row.icon}</span>}
+                            </td>
+                            <td className="py-3 px-4 text-[0.85rem] text-right">
+                              {row.isPct ? `${row.v24.toFixed(1)}%` : row.v24.toLocaleString('es-ES')}
+                            </td>
+                            <td className="py-3 px-4 text-[0.85rem] text-right">
+                              {row.isPct ? `${row.v25.toFixed(1)}%` : row.v25.toLocaleString('es-ES')}
+                            </td>
+                            <td className={cn(
+                              "py-3 px-4 text-[0.85rem] text-right font-medium",
+                              row.var > 0 ? "text-[#34c759]" : row.var < 0 ? "text-[#ff3b30]" : "text-[#6e6e73]"
+                            )}>
+                              {row.isPct ? '—' : (row.var > 0 ? '+' : '') + row.var.toLocaleString('es-ES')}
+                            </td>
+                            <td className={cn(
+                              "py-3 px-4 text-[0.85rem] text-right font-bold",
+                              row.varPct > 0 ? (row.concept.includes('GASTOS') || row.concept.includes('APROVISIONAMIENTOS') ? "text-[#ff3b30]" : "text-[#34c759]") : 
+                              row.varPct < 0 ? (row.concept.includes('GASTOS') || row.concept.includes('APROVISIONAMIENTOS') ? "text-[#34c759]" : "text-[#ff3b30]") : "text-[#6e6e73]"
+                            )}>
+                              {row.varPct > 0 ? '+' : ''}{row.isPct ? row.varPct.toFixed(1) + ' pp' : row.varPct.toFixed(1) + '%'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
 
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3 text-[#0071e3]">
-                      <BarChart3 size={28} />
-                      <h2 className="text-2xl font-bold tracking-tight">2. Mix de Ingresos: Optimización de la Barra</h2>
-                    </div>
-                    <p className="text-lg text-[#1d1d1f] leading-relaxed">
-                      La barra sigue siendo el pilar fundamental, aportando <span className="font-bold">{DATA_2025.barra.toLocaleString('es-ES')} €</span> ({Math.round((DATA_2025.barra / DATA_2025.ingresos) * 100)}% del total).
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-[#e8f1fb] p-6 rounded-2xl border border-[#0071e3]/10">
-                        <p className="text-[#0071e3] font-medium mb-2 uppercase text-[0.7rem] tracking-wider">Consumo por Asistente</p>
-                        <p className="text-[#1d1d1f]">El ratio de consumo en barra vs entrada se ha optimizado, reflejando una mejor selección de perfiles de público y programación.</p>
-                      </div>
-                      <div className="bg-[#f5f5f7] p-6 rounded-2xl border border-black/5">
-                        <p className="text-[#6e6e73] font-medium mb-2 uppercase text-[0.7rem] tracking-wider">Taquilla y Web</p>
-                        <p className="text-[#1d1d1f]">La venta anticipada y taquilla física suman <span className="font-bold">200.463 €</span>, validando la fuerza de marca de LAUT en la escena local.</p>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="space-y-10 max-w-4xl">
+                    <section>
+                      <h2 className="text-2xl font-bold tracking-tight mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-full bg-[#1d1d1f] text-white flex items-center justify-center text-sm">1</span>
+                        El margen bruto mejora, pero los costes fijos se lo engullen íntegro
+                      </h2>
+                      <p className="text-lg text-[#1d1d1f] leading-relaxed">
+                        La empresa consiguió algo positivo en 2025: redujo sus costes variables (aprovisionamientos -9,9%) y recuperó 5,2 puntos de margen bruto, pasando del 41,3% al 46,5%. Esto es una buena señal de gestión operativa. El problema es que esos <span className="font-bold text-[#34c759]">27.421€</span> adicionales de margen bruto ganados con esfuerzo fueron absorbidos completamente por el aumento de costes fijos y semifijos: personal (+15.449€) y otros gastos de explotación (+25.784€). El resultado final es un EBIT que sigue cayendo. La empresa trabaja más eficientemente en la producción de eventos y peor en el control de su estructura.
+                      </p>
+                    </section>
 
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3 text-[#ff3b30]">
-                      <AlertTriangle size={28} />
-                      <h2 className="text-2xl font-bold tracking-tight">3. Gestión de Costes en un Entorno Inflacionario</h2>
-                    </div>
-                    <p className="text-lg text-[#1d1d1f] leading-relaxed">
-                      El control de gastos ha sido clave para mantener la rentabilidad ante el aumento de costes generales:
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-[#fff2f1] p-6 rounded-2xl border border-[#ff3b30]/10">
-                        <p className="text-[#ff3b30] font-medium mb-2 uppercase text-[0.7rem] tracking-wider">Aprovisionamiento</p>
-                        <p className="text-[#1d1d1f]">Las compras de bar se mantienen bajo control ({Math.round((73240 / DATA_2025.barra) * 100)}% sobre ventas barra), preservando un margen bruto excelente.</p>
-                      </div>
-                      <div className="bg-[#fff2f1] p-6 rounded-2xl border border-[#ff3b30]/10">
-                        <p className="text-[#ff3b30] font-medium mb-2 uppercase text-[0.7rem] tracking-wider">Talento y Producción</p>
-                        <p className="text-[#1d1d1f]">La inversión en Booking DJs ({Math.round((57540 / DATA_2025.ingresos) * 100)}% del total) garantiza la calidad artística sin comprometer el EBITDA.</p>
-                      </div>
-                    </div>
-                  </div>
+                    <section>
+                      <h2 className="text-2xl font-bold tracking-tight mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-full bg-[#ff3b30] text-white flex items-center justify-center text-sm">2</span>
+                        Reparaciones y Suministros son la señal de alarma más urgente
+                      </h2>
+                      <p className="text-lg text-[#1d1d1f] leading-relaxed">
+                        Reparaciones se duplica de un año para otro (<span className="font-bold text-[#ff3b30]">+106%</span>, de 7.151€ a 14.731€) y Suministros crece al doble que los ingresos (+26,4%, alcanzando 56.433€). Juntas suman <span className="font-bold">71.164€</span> — el 12,4% de los ingresos totales. No es una fluctuación puntual: los suministros llevan 4 años creciendo de forma ininterrumpida sin correlación con los ingresos. Las reparaciones disparadas sugieren o bien un activo físico deteriorado sin plan de mantenimiento preventivo, o bien obras/mejoras no capitalizadas pasadas directamente a gasto. Si no se interviene, estas dos partidas pueden costar 90.000€ en 2026.
+                      </p>
+                    </section>
 
-                  <div className="flex flex-col gap-6 pt-6 border-t border-black/5">
-                    <div className="flex items-center gap-3 text-[#34c759]">
-                      <Info size={28} />
-                      <h2 className="text-2xl font-bold tracking-tight">4. Conclusiones Estratégicas</h2>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex gap-4 items-start">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#34c759] mt-2 flex-shrink-0" />
-                        <p className="text-[0.95rem] text-[#1d1d1f] leading-relaxed">
-                          <strong>Escalabilidad:</strong> El aumento del 44% en el número de eventos ha sido absorbido eficientemente por la estructura operativa.
-                        </p>
-                      </div>
-                      <div className="flex gap-4 items-start">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#34c759] mt-2 flex-shrink-0" />
-                        <p className="text-[0.95rem] text-[#1d1d1f] leading-relaxed">
-                          <strong>Ocupación:</strong> La mejora del 54% al 61% de ocupación media indica un mayor aprovechamiento de la capacidad instalada.
-                        </p>
-                      </div>
-                      <div className="flex gap-4 items-start">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#34c759] mt-2 flex-shrink-0" />
-                        <p className="text-[0.95rem] text-[#1d1d1f] leading-relaxed">
-                          <strong>Futuro:</strong> Con un beneficio neto de <span className="font-bold">142.300 €</span>, la empresa está en una posición inmejorable para afrontar nuevas inversiones o expansiones de marca.
-                        </p>
-                      </div>
+                    <section>
+                      <h2 className="text-2xl font-bold tracking-tight mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-full bg-[#ff9500] text-white flex items-center justify-center text-sm">3</span>
+                        El resultado neto de 16.135€ es en realidad un espejismo contable
+                      </h2>
+                      <p className="text-lg text-[#1d1d1f] leading-relaxed">
+                        El EBIT de 2025 incluye <span className="font-bold">9.382€</span> de subvenciones, un ingreso no recurrente y no garantizado para ejercicios futuros. Eliminando ese efecto, el resultado operativo recurrente sería de apenas <span className="font-bold text-[#ff3b30]">~11.274€</span> sobre 572K€ de facturación — un margen real del <span className="font-bold">1,97%</span>. La empresa no está generando rentabilidad sostenible: está sobreviviendo. Cualquier imprevisto de calado medio (una reparación mayor, un evento cancelado, una subida de tarifa energética) lleva el ejercicio a pérdidas sin ningún colchón de absorción.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h2 className="text-2xl font-bold tracking-tight mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-full bg-[#ff3b30] text-white flex items-center justify-center text-sm">4</span>
+                        La Barra cede, y eso es el verdadero indicador a vigilar en 2026
+                      </h2>
+                      <p className="text-lg text-[#1d1d1f] leading-relaxed">
+                        La Taquilla está prácticamente plana (-0,1%), lo que confirma que el aforo se mantiene. Pero la Barra retrocede <span className="font-bold text-[#ff3b30]">-2,9%</span> (-9.391€) a pesar de que la gente sigue entrando. Esto significa que el <span className="font-bold">gasto por asistente dentro del local está cayendo</span>. Las causas pueden ser múltiples —precios, experiencia, competencia, mix de eventos— pero la consecuencia es clara: si esta tendencia se mantiene en 2026, la línea de mayor peso en la facturación (54,5% de los ingresos) entra en declive estructural.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h2 className="text-2xl font-bold tracking-tight mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-full bg-[#34c759] text-white flex items-center justify-center text-sm">5</span>
+                        Las Ventas Web anticipadas son el único activo estratégico real
+                      </h2>
+                      <p className="text-lg text-[#1d1d1f] leading-relaxed">
+                        Crecen un <span className="font-bold text-[#34c759]">+16,4%</span> en 2025 y lo han hecho todos y cada uno de los 5 años analizados. Son ingresos de bajo coste, predecibles, y que reducen el riesgo operativo al confirmar asistencia antes del evento. Representan ya <span className="font-bold">51.697€</span> — el 9% de los ingresos — y tienen margen para doblar. Es la única palanca de crecimiento que la empresa tiene activa y que no genera presión de coste adicional.
+                      </p>
+                    </section>
+
+                    <div className="mt-12 p-8 bg-[#f5f5f7] rounded-[24px] border border-black/5">
+                      <h3 className="text-xl font-bold mb-4">Veredicto 2024→2025</h3>
+                      <p className="text-[#1d1d1f] leading-relaxed italic">
+                        "Un año técnicamente plano que esconde un deterioro real. Los ingresos aguantan (-1,1%), la eficiencia en aprovisionamientos mejora, pero la estructura de costes crece de forma autónoma y la rentabilidad sigue erosionándose. Con un margen neto real por debajo del 2%, la empresa está operando sin red de seguridad. El ejercicio 2026 será determinante: si personal y gastos de explotación siguen creciendo al ritmo actual sobre ingresos estancados, el resultado neto será negativo."
+                      </p>
                     </div>
                   </div>
                 </div>
               </Card>
+            </div>
+          )}
+          {activeTab === 'proyeccion_2026' && (
+            <div className="flex flex-col gap-5 animate-in fade-in duration-500">
+              <div className="grid grid-cols-1 gap-4">
+                <Card className="p-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-[#0071e3]/10 rounded-lg text-[#0071e3]">
+                      <TrendingUp size={24} />
+                    </div>
+                    <h3 className="text-[1.3rem] font-bold tracking-tight">Proyección Realista 2026</h3>
+                  </div>
+
+                  <div className="mb-8">
+                    <h4 className="text-[0.9rem] font-bold text-[#1d1d1f] mb-4 uppercase tracking-wider">Impacto Acumulado de Ajustes sobre Proyección Base</h4>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-black/5">
+                            <th className="py-3 px-4 text-[0.75rem] font-bold text-[#6e6e73] uppercase">Ajuste</th>
+                            <th className="py-3 px-4 text-[0.75rem] font-bold text-[#6e6e73] uppercase text-right">Impacto en EBIT</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {PROJECTION_ADJUSTMENTS.map((adj, idx) => (
+                            <tr key={idx} className={cn(
+                              "border-b border-black/5 last:border-none hover:bg-[#f5f5f7] transition-colors",
+                              adj.bold && "bg-[#f5f5f7]/50 font-bold"
+                            )}>
+                              <td className="py-4 px-4 text-[0.85rem] font-medium text-[#1d1d1f]">{adj.factor}</td>
+                              <td className={cn("py-4 px-4 text-[0.85rem] font-bold text-right", adj.positive ? "text-[#34c759]" : "text-[#ff3b30]")}>
+                                {adj.effect}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div className="mb-8">
+                    <h4 className="text-[0.9rem] font-bold text-[#1d1d1f] mb-4 uppercase tracking-wider">Resultado Final 2026</h4>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-black/5">
+                            <th className="py-3 px-4 text-[0.75rem] font-bold text-[#6e6e73] uppercase">Concepto</th>
+                            <th className="py-3 px-4 text-[0.75rem] font-bold text-[#6e6e73] uppercase text-right">2025 Real</th>
+                            <th className="py-3 px-4 text-[0.75rem] font-bold text-[#6e6e73] uppercase text-right bg-[#0071e3]/5">2026 Proyección</th>
+                            <th className="py-3 px-4 text-[0.75rem] font-bold text-[#6e6e73] uppercase text-right">Var. 25→26</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {PROJECTION_2026_DATA.map((row, idx) => (
+                            <tr key={idx} className={cn(
+                              "border-b border-black/5 last:border-none hover:bg-[#f5f5f7] transition-colors",
+                              row.bold && "bg-[#f5f5f7]/50"
+                            )}>
+                              <td className={cn(
+                                "py-3 px-4 text-[0.85rem]",
+                                row.bold ? "font-bold text-[#1d1d1f]" : "text-[#1d1d1f]",
+                                row.italic && "italic text-[#6e6e73]"
+                              )}>
+                                <div className="flex items-center gap-2">
+                                  {row.concept}
+                                  {row.icon && <span>{row.icon}</span>}
+                                </div>
+                              </td>
+                              <td className="py-3 px-4 text-[0.85rem] text-right text-[#6e6e73]">
+                                {row.isPct ? `${row.v25.toString().replace('.', ',')}%` : `${row.v25.toLocaleString('es-ES')} €`}
+                              </td>
+                              <td className="py-3 px-4 text-[0.85rem] text-right font-bold text-[#0071e3] bg-[#0071e3]/5">
+                                {row.isPct ? `~${row.v26.toString().replace('.', ',')}%` : `~${row.v26.toLocaleString('es-ES')} €`}
+                              </td>
+                              <td className={cn(
+                                "py-3 px-4 text-[0.85rem] text-right font-bold",
+                                row.var > 0 ? (row.concept.includes('GASTOS') || row.concept.includes('APROVISIONAMIENTOS') ? "text-[#ff3b30]" : "text-[#34c759]") : 
+                                row.var < 0 ? (row.concept.includes('GASTOS') || row.concept.includes('APROVISIONAMIENTOS') ? "text-[#34c759]" : "text-[#ff3b30]") : 
+                                "text-[#6e6e73]"
+                              )}>
+                                {row.var > 0 ? '+' : ''}{row.var.toString().replace('.', ',')}{row.isPct ? ' pp' : '%'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="text-[0.9rem] font-bold text-[#1d1d1f] uppercase tracking-wider">Conclusiones Clave</h4>
+                      <div className="space-y-4">
+                        <div className="p-4 bg-[#f5f5f7] rounded-xl border border-black/5">
+                          <p className="text-[0.85rem] font-bold text-[#1d1d1f] mb-1">1. El efecto Agosto</p>
+                          <p className="text-[0.82rem] text-[#6e6e73] leading-relaxed">
+                            La apertura ampliada (5 semanas) es el motor principal del crecimiento de ingresos (+5,8%). El volumen extra de barra y taquilla permite absorber el aumento de costes fijos.
+                          </p>
+                        </div>
+                        <div className="p-4 bg-[#f5f5f7] rounded-xl border border-black/5">
+                          <p className="text-[0.85rem] font-bold text-[#1d1d1f] mb-1">2. Eficiencia en Otros Gastos</p>
+                          <p className="text-[0.82rem] text-[#6e6e73] leading-relaxed">
+                            La reducción del <span className="font-bold text-[#1d1d1f]">-6,6%</span> en otros gastos de explotación (especialmente reparaciones) es clave para mantener el margen operativo.
+                          </p>
+                        </div>
+                        <div className="p-4 bg-[#f5f5f7] rounded-xl border border-black/5">
+                          <p className="text-[0.85rem] font-bold text-[#1d1d1f] mb-1">3. Presión Salarial</p>
+                          <p className="text-[0.82rem] text-[#6e6e73] leading-relaxed">
+                            El gasto de personal crece un +7,5%, elevando la ratio sobre ingresos al <span className="font-bold text-[#ff3b30]">21,6%</span>, el nivel más alto registrado, lo que requiere vigilancia estrecha.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="text-[0.9rem] font-bold text-[#1d1d1f] uppercase tracking-wider">Rentabilidad y Riesgos</h4>
+                      <div className="space-y-4">
+                        <div className="p-4 bg-[#f5f5f7] rounded-xl border border-black/5">
+                          <p className="text-[0.85rem] font-bold text-[#1d1d1f] mb-1">4. Independencia de Subvenciones</p>
+                          <p className="text-[0.82rem] text-[#6e6e73] leading-relaxed">
+                            Incluso sin los 13k€ de subvenciones, el EBIT recurrente sería de <span className="font-bold text-[#1d1d1f]">~17.000€</span>, superando la rentabilidad operativa real de 2025.
+                          </p>
+                        </div>
+                        <div className="p-4 bg-[#f5f5f7] rounded-xl border border-black/5">
+                          <p className="text-[0.85rem] font-bold text-[#1d1d1f] mb-1">5. Riesgo de Margen</p>
+                          <p className="text-[0.82rem] text-[#6e6e73] leading-relaxed">
+                            El incremento del +7,5% en personal es el mayor riesgo. Si los ingresos no alcanzan los 605k€, el margen neto podría verse seriamente comprometido por la rigidez de costes.
+                          </p>
+                        </div>
+                        <div className="p-6 bg-[#34c759]/10 rounded-xl border border-[#34c759]/20">
+                          <p className="text-[0.9rem] font-bold text-[#1d1d1f] mb-2 flex items-center gap-2">
+                            <CheckCircle2 size={18} className="text-[#34c759]" />
+                            Veredicto 2026
+                          </p>
+                          <p className="text-[0.85rem] text-[#1d1d1f] leading-relaxed italic">
+                            "2026 proyecta <span className="font-bold">~23.400€ de resultado neto</span> y un EBIT del <span className="font-bold">5,0%</span> — el mejor ejercicio desde 2023 y prácticamente el doble que 2025, sostenido principalmente por las 5 semanas de agosto y el ahorro en reparaciones. El único punto de vigilancia es la ratio de personal, que toca su máximo histórico del 21,6%."
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
             </div>
           )}
         </div>
